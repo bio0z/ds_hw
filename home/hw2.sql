@@ -9,7 +9,7 @@ select count(*) from links where movieid not in (select distinct(movieid) from r
 select avg(rating) as "average rating" from ratings group by userid having avg(rating) > 3.5 order by avg(rating) desc limit 10;
 -- 4 часть: запросы
 select imdbid from links where movieid in (select movieid from ratings group by movieid having avg(rating) > 3.5 order by avg(rating) asc limit 10);
-	-- простой вариант
-select userid, avg(rating) as "avg rating", count(rating) as "count ratings" from ratings group by userid having count(rating)>10 order by count(rating) desc limit 10;
-	-- CTE 
-with top_users_ratings as (select userid, avg(rating) as "avg_rating", count(rating) as "count_ratings" from ratings group by userid order by count(rating) desc) select avg_rating as avg_rating from top_users_ratings where count_ratings >10 limit 10;
+	-- 4.2 простой вариант (49.871 ms) быстрее
+select avg(rating) from (select 1 as id, rating from ratings where userid in (select userid from ratings group by userid having count(rating)>10)) as table1 group by id;
+	-- 4.2 CTE  (74.647 ms)
+with uratings as (select rating from ratings where userid in (select userid from ratings group by userid having count(rating)>10)) select avg(rating) from uratings;
