@@ -1,2 +1,2 @@
-# flask_docker_app
-Docker image with flask, redis, mongo and postgres
+# my_hw repo
+all you need is git
